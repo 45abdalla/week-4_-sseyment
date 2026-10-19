@@ -1,0 +1,211 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Vehicle_Rental_managment
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            bool bookingApproved = true;
+            string reason = "";
+
+            // 1. Customer Name
+            string customerName = txtCustomerName.Text.Trim();
+
+            if (customerName == "")
+            {
+                bookingApproved = false;
+                reason = "Customer name cannot be empty.";
+            }
+
+            // 2. Validate Customer Age
+            int age = 0;
+
+            if (!int.TryParse(txtCustomerAge.Text, out age))
+            {
+                bookingApproved = false;
+                reason = "Enter a valid customer age.";
+            }
+            else if (age < 18 || age > 80)
+            {
+                bookingApproved = false;
+                reason = "Age must be between 18 and 80.";
+            }
+            else if (age < 21)
+            {
+                bookingApproved = false;
+                reason = "Customers below 21 are not eligible.";
+            }
+
+            // 3. Validate Rental Days
+            int days = 0;
+
+            if (!int.TryParse(txtRentalDays.Text, out days))
+            {
+                bookingApproved = false;
+                reason = "Enter valid rental days.";
+            }
+            else if (days < 1 || days > 30)
+            {
+                bookingApproved = false;
+                reason = "Rental days must be between 1 and 30.";
+            }
+
+            // 4. Validate Driving Experience
+            int experience = 0;
+
+            if (!int.TryParse(txtDrivingExperience.Text,
+                out experience))
+            {
+                bookingApproved = false;
+                reason = "Enter valid driving experience.";
+            }
+            else if (experience < 0)
+            {
+                bookingApproved = false;
+                reason = "Driving experience cannot be negative.";
+            }
+            else if (experience < 1)
+            {
+                bookingApproved = false;
+                reason = "At least 1 year of driving experience is required.";
+            }
+
+            // 5. Check Vehicle Selection
+            if (!rdoEconomy.Checked &&
+                !rdoSUV.Checked &&
+                !rdoLuxury.Checked)
+            {
+                bookingApproved = false;
+                reason = "Please select a vehicle type.";
+            }
+
+            // 6. Luxury Vehicle Rules
+            if (rdoLuxury.Checked)
+            {
+                if (age < 25)
+                {
+                    bookingApproved = false;
+                    reason = "Luxury requires age 25 or above.";
+                }
+                else if (experience < 3)
+                {
+                    bookingApproved = false;
+                    reason = "Luxury requires 3 years of driving experience.";
+                }
+            }
+
+            // 7. Reject Booking if Invalid
+            if (!bookingApproved)
+            {
+                MessageBox.Show(reason, "Booking Rejected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                rtbRentalDetails.Text = reason;
+                return;
+            }
+
+            // 8. Daily Rental Rate
+            double dailyRate = 0;
+            string vehicleType = "";
+
+            if (rdoEconomy.Checked)
+            {
+                dailyRate = 35;
+                vehicleType = "Economy";
+            }
+            else if (rdoSUV.Checked)
+            {
+                dailyRate = 60;
+                vehicleType = "SUV";
+            }
+            else if (rdoLuxury.Checked)
+            {
+                dailyRate = 100;
+                vehicleType = "Luxury";
+            }
+
+            // 9. Basic Rental Cost
+            double basicCost = dailyRate * days;
+
+            // 10. Calculate Discount
+            double discountRate = 0;
+
+            if (days >= 14)
+                discountRate = 0.10;
+            else if (days >= 7)
+                discountRate = 0.05;
+
+            double discount = basicCost * discountRate;
+
+            // 11. Young Driver Surcharge
+            double youngSurcharge = 0;
+
+            if (age >= 21 && age <= 24)
+                youngSurcharge = basicCost * 0.10;
+
+            // 12. Insurance Cost
+            double insuranceCost = 0;
+
+            if (chkInsurance.Checked)
+                insuranceCost = 15 * days;
+
+            // 13. Final Rental Cost
+            double finalCost = basicCost - discount
+                               + youngSurcharge + insuranceCost;
+
+            // 14. Display Rental Details
+            rtbRentalDetails.Text =
+                "VEHICLE RENTAL DETAILS\n\n" +
+                "Customer Name: " + customerName + "\n" +
+                "Customer Age: " + age + "\n" +
+                "Driving Experience: " + experience + " years\n" +
+                "Vehicle Type: " + vehicleType + "\n" +
+                "Rental Days: " + days + "\n\n" +
+                "Daily Rate: $" + dailyRate.ToString("0.00") + "\n" +
+                "Basic Rental Cost: $" + basicCost.ToString("0.00") + "\n" +
+                "Discount: $" + discount.ToString("0.00") + "\n" +
+                "Young Driver Surcharge: $" +
+                youngSurcharge.ToString("0.00") + "\n" +
+                "Insurance Cost: $" + insuranceCost.ToString("0.00") + "\n" +
+                "--------------------------------\n" +
+                "FINAL RENTAL COST: $" + finalCost.ToString("0.00") +
+                "\n\nBooking Approved!";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            txtCustomerName.Clear();
+            txtCustomerAge.Clear();
+            txtRentalDays.Clear();
+            txtDrivingExperience.Clear();
+
+            rdoEconomy.Checked = false;
+            rdoSUV.Checked = false;
+            rdoLuxury.Checked = false;
+
+            chkInsurance.Checked = false;
+
+            rtbRentalDetails.Text = "";
+            txtCustomerName.Focus();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+    }
+}

@@ -1,0 +1,219 @@
+Chapter 3: Making Decisions in C#
+
+1. Decision Structures and the if Statement
+
+A decision structure is used to make a decision in a program. It executes a statement when a condition is true.
+
+Example:
+
+if (age >= 18)
+{
+    MessageBox.Show("You are an adult");
+}
+
+2. Relational Operators
+
+Relational operators are used to compare two values.
+
+- ">" Greater than
+- "<" Less than
+- ">=" Greater than or equal to
+- "<=" Less than or equal to
+- "==" Equal to
+- "!=" Not equal to
+
+3. The if-else Statement
+
+The "if-else" statement is used when there are two possible results. If the condition is true, the "if" block runs. Otherwise, the "else" block runs.
+
+Example:
+
+if (mark >= 50)
+{
+    MessageBox.Show("Pass");
+}
+else
+{
+    MessageBox.Show("Fail");
+}
+
+4. Nested Decision Structures
+
+A nested decision structure means placing one "if" statement inside another "if" statement. It is used to check more than one condition.
+
+Example:
+
+if (age >= 18)
+{
+    if (age <= 60)
+    {
+        MessageBox.Show("Allowed");
+    }
+}
+
+5. The if-else-if Statement
+
+This statement is used to check several conditions. The program executes the block for the first condition that is true.
+
+Example:
+
+if (mark >= 80)
+{
+    MessageBox.Show("Grade A");
+}
+else if (mark >= 60)
+{
+    MessageBox.Show("Grade B");
+}
+else
+{
+    MessageBox.Show("Grade C");
+}
+
+6. Logical Operators
+
+Logical operators are used to combine or reverse conditions.
+
+- "&&" (AND): Both conditions must be true.
+- "||" (OR): At least one condition must be true.
+- "!" (NOT): Reverses the result of a condition.
+
+Example:
+
+if (age >= 18 && age <= 30)
+{
+    MessageBox.Show("Age accepted");
+}
+
+7. bool Variables and Flags
+
+A "bool" variable stores only two values: "true" or "false".
+
+A flag is a variable used to indicate whether a particular condition exists.
+
+Example:
+
+bool isPassed = true;
+
+8. Comparing Strings
+
+Strings can be compared using the "==" and "!=" operators. The "String.Compare()" method can also be used to compare two strings.
+
+Example:
+
+if (name1 == name2)
+{
+    MessageBox.Show("Names are equal");
+}
+
+9. The TryParse Method
+
+"TryParse()" is used to convert input into a numeric value without causing a conversion exception when the input is invalid.
+
+Common methods are:
+
+- "int.TryParse()"
+- "double.TryParse()"
+- "decimal.TryParse()"
+
+Example:
+
+int age;
+
+if (int.TryParse(textBox1.Text, out age))
+{
+    MessageBox.Show(age.ToString());
+}
+else
+{
+    MessageBox.Show("Enter a valid number");
+}
+
+10. Input Validation
+
+Input validation means checking whether the data entered by the user is valid before using it in a program.
+
+For example, a test score should be between 0 and 100.
+
+if (score >= 0 && score <= 100)
+{
+    MessageBox.Show("Valid score");
+}
+
+11. Radio Buttons and Check Boxes
+
+RadioButton: Allows the user to select one option from a group of choices.
+
+CheckBox: Allows the user to select or deselect an option. Multiple check boxes can be selected.
+
+The "Checked" property is used to check whether an option is selected.
+
+Example:
+
+if (radioButton1.Checked)
+{
+    MessageBox.Show("Option selected");
+}
+
+12. The CheckedChanged Event
+
+The "CheckedChanged" event occurs when the "Checked" property of a RadioButton or CheckBox changes. It allows the program to respond to a change in selection.
+
+13. The switch Statement
+
+The "switch" statement selects a block of code based on the value of an expression. It can be used instead of several "if-else-if" statements.
+
+Example:
+
+switch (day)
+{
+    case 1:
+        MessageBox.Show("Monday");
+        break;
+
+    case 2:
+        MessageBox.Show("Tuesday");
+        break;
+
+    default:
+        MessageBox.Show("Invalid day");
+        break;
+}
+
+The "break" statement ends the current case. The "default" section runs when no case matches.
+
+14. Introduction to List Boxes
+
+A ListBox displays a list of items and allows the user to select an item.
+
+Common properties and methods:
+
+- "Text": Gets the displayed text of the selected item.
+- "Items": Contains the items in the list.
+- "Items.Count": Returns the number of items.
+- "SelectedItem": Gets the selected item.
+- "SelectedIndex": Gets the index of the selected item. The first item has index "0".
+- "Items.Add()": Adds an item.
+- "Items.Remove()": Removes a specific item.
+- "Items.RemoveAt()": Removes an item by index.
+- "Items.Clear()": Removes all items.
+
+Example:
+
+listBox1.Items.Add("Monday");
+listBox1.Items.Add("Tuesday");
+
+To remove an item:
+
+listBox1.Items.Remove("Monday");
+
+To check whether an item is selected:
+
+if (listBox1.SelectedIndex != -1)
+{
+    MessageBox.Show(listBox1.SelectedItem.ToString());
+}
+
+Conclusion
+
+Decision structures help a C# program make choices based on conditions. The "if", "if-else", and "switch" statements are used to control program execution. Logical operators, input validation, TryParse, RadioButtons, CheckBoxes, and ListBoxes help make Windows Forms applications more useful and reliable.

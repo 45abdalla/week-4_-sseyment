@@ -1,0 +1,206 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Airline_Ticket_Book
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            bool bookingApproved = true;
+            string reason = "";
+
+            // Passenger name
+            string passengerName = txtPassengerName.Text.Trim();
+
+            if (passengerName == "")
+            {
+                bookingApproved = false;
+                reason = "Passenger name cannot be empty.";
+            }
+
+            // Validate age
+            int age;
+            if (!int.TryParse(txtPassengerAge.Text, out age))
+            {
+                bookingApproved = false;
+                reason = "Enter a valid passenger age.";
+            }
+            else if (age < 1 || age > 100)
+            {
+                bookingApproved = false;
+                reason = "Age must be between 1 and 100.";
+            }
+
+            // Validate number of tickets
+            int tickets;
+            if (!int.TryParse(txtNumberOfTickets.Text, out tickets))
+            {
+                bookingApproved = false;
+                reason = "Enter a valid number of tickets.";
+            }
+            else if (tickets < 1 || tickets > 5)
+            {
+                bookingApproved = false;
+                reason = "Tickets must be between 1 and 5.";
+            }
+
+            // Validate baggage weight
+            double baggage;
+            if (!double.TryParse(txtBaggageWeight.Text, out baggage))
+            {
+                bookingApproved = false;
+                reason = "Enter a valid baggage weight.";
+            }
+            else if (baggage < 0 || baggage > 50)
+            {
+                bookingApproved = false;
+                reason = "Baggage must be between 0 and 50 kg.";
+            }
+
+            // Check travel class
+            if (!rdoFirstClass.Checked &&
+                !rdoNormalClass.Checked &&
+                !rdoBusinessClass.Checked)
+            {
+                bookingApproved = false;
+                reason = "Please select a travel class.";
+            }
+
+            // Reject children in First Class
+            if (bookingApproved && age < 12 &&
+                rdoFirstClass.Checked)
+            {
+                bookingApproved = false;
+                reason = "Passengers below 12 cannot book First Class.";
+            }
+
+            // Show rejection reason
+            if (!bookingApproved)
+            {
+                MessageBox.Show(reason, "Booking Rejected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                lblBookingDetails.Text = reason;
+                return;
+            }
+
+            // Ticket price
+            double ticketPrice = 0;
+
+            if (rdoFirstClass.Checked)
+                ticketPrice = 500;
+            else if (rdoNormalClass.Checked)
+                ticketPrice = 200;
+            else if (rdoBusinessClass.Checked)
+                ticketPrice = 350;
+
+            // Basic ticket cost
+            double basicCost = ticketPrice * tickets;
+            double discount = 0;
+
+            // Ticket quantity discount
+            if (tickets >= 3 && tickets <= 4)
+                discount += 0.05;
+            else if (tickets == 5)
+                discount += 0.10;
+
+            // Age discount
+            if (age < 12)
+                discount += 0.20;
+            else if (age >= 60)
+                discount += 0.10;
+
+            double discountAmount = basicCost * discount;
+            double total = basicCost - discountAmount;
+
+            // Travel insurance: $25 per ticket
+            double insuranceCost = 0;
+
+            if (chkInsurance.Checked)
+                insuranceCost = 25 * tickets;
+
+            total += insuranceCost;
+
+            // Baggage charge
+            double baggageCost = 0;
+
+            if (baggage > 20)
+                baggageCost = 10; // Assumed extra baggage fee
+
+            total += baggageCost;
+
+            // Display booking details
+            lblBookingDetails.Text =
+                "AIRLINE BOOKING DETAILS\n\n" +
+                "Passenger: " + passengerName + "\n" +
+                "Age: " + age + "\n" +
+                "Tickets: " + tickets + "\n" +
+                "Baggage: " + baggage + " kg\n" +
+                "Travel Class: " +
+                (rdoFirstClass.Checked ? "First Class" :
+                rdoNormalClass.Checked ? "Normal Class" :
+                "Business Class") + "\n\n" +
+                "Basic Cost: $" + basicCost.ToString("0.00") + "\n" +
+                "Discount: $" + discountAmount.ToString("0.00") + "\n" +
+                "Insurance: $" + insuranceCost.ToString("0.00") + "\n" +
+                "Baggage Fee: $" + baggageCost.ToString("0.00") + "\n" +
+                "TOTAL: $" + total.ToString("0.00") + "\n\n" +
+                "Booking Approved!";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            txtPassengerName.Clear();
+            txtPassengerAge.Clear();
+            txtNumberOfTickets.Clear();
+            txtBaggageWeight.Clear();
+
+            rdoFirstClass.Checked = false;
+            rdoNormalClass.Checked = false;
+            rdoBusinessClass.Checked = false;
+
+            chkInsurance.Checked = false;
+            lblBookingDetails.Text = "";
+
+            txtPassengerName.Focus();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+    }
+}

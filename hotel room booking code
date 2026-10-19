@@ -1,0 +1,240 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+
+namespace hotell_room_booking
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+      
+          private void button1_Click(object sender, EventArgs e)
+        {
+            // 1. Validate Guest Name
+            string guestName = txtGuestName.Text.Trim();
+
+            if (guestName == "")
+            {
+                MessageBox.Show("Please enter Guest Name.");
+                txtGuestName.Focus();
+                return;
+            }
+
+            // 2. Validate numeric inputs using TryParse
+            int age, nights, guests;
+
+            if (!int.TryParse(txtGuestAge.Text, out age))
+            {
+                MessageBox.Show("Enter a valid Guest Age.");
+                txtGuestAge.Focus();
+                return;
+            }
+
+            if (!int.TryParse(txtNights.Text, out nights))
+            {
+                MessageBox.Show("Enter a valid Number of Nights.");
+                txtNights.Focus();
+                return;
+            }
+
+            if (!int.TryParse(txtGuests.Text, out guests))
+            {
+                MessageBox.Show("Enter a valid Number of Guests.");
+                txtGuests.Focus();
+                return;
+            }
+
+            // 3. Validate ranges
+            if (age < 18 || age > 90)
+            {
+                MessageBox.Show("Age must be between 18 and 90.");
+                return;
+            }
+
+            if (nights < 1 || nights > 30)
+            {
+                MessageBox.Show("Nights must be between 1 and 30.");
+                return;
+            }
+
+            if (guests < 1 || guests > 6)
+            {
+                MessageBox.Show("Guests must be between 1 and 6.");
+                return;
+            }
+
+            // 4. Room selection and capacity
+            bool approved = true;
+            string roomType = "";
+            double rate = 0;
+            int maxGuests = 0;
+
+            if (rdoStandard.Checked)
+            {
+                roomType = "Standard";
+                maxGuests = 2;
+            }
+            else if (rdoNormal.Checked)
+            {
+                roomType = "Normal";
+                maxGuests = 4;
+            }
+            else if (rdoHight.Checked)
+            {
+                roomType = "Hight";
+                maxGuests = 6;
+            }
+            else
+            {
+                MessageBox.Show("Please select a Room Type.");
+                return;
+            }
+
+            if (guests > maxGuests)
+            {
+                approved = false;
+            }
+
+            if (!approved)
+            {
+                MessageBox.Show("Booking Rejected! Too many guests for this room.");
+                rtbDetails.Text = "BOOKING REJECTED\nRoom capacity exceeded.";
+                return;
+            }
+
+            // 5. Determine room rate using switch
+            switch (roomType)
+            {
+                case "Standard":
+                    rate = 130;
+                    break;
+
+                case "Normal":
+                    rate = 50;
+                    break;
+
+                case "Hight":
+                    rate = 80;
+                    break;
+            }
+
+            // 6. Calculate room cost
+            double roomCost = rate * nights;
+
+            // 7. Night discount
+            double nightDiscountRate = 0;
+
+            if (nights >= 10)
+                nightDiscountRate = 0.12;
+            else if (nights >= 5)
+                nightDiscountRate = 0.05;
+
+            double nightDiscount = roomCost * nightDiscountRate;
+
+            // 8. Breakfast cost
+            double breakfastCost = 0;
+
+            if (chkBreakfast.Checked)
+            {
+                breakfastCost = 10 * guests * nights;
+            }
+
+            // 9. Service surcharge
+            double subtotal = roomCost - nightDiscount + breakfastCost;
+            double serviceCharge = 0;
+
+            if (guests > 4)
+            {
+                serviceCharge = subtotal * 0.05;
+            }
+
+            // 10. Senior discount
+            double seniorDiscount = 0;
+
+            if (age >= 60)
+            {
+                seniorDiscount = (subtotal - serviceCharge) * 0.05;
+            }
+
+            // 11. Final total
+            double total = subtotal + serviceCharge - seniorDiscount;
+
+            // 12. Display booking details
+            rtbDetails.Text =
+                "BOOKING APPROVED\n" +
+                "-------------------------\n" +
+                "Guest Name: " + guestName + "\n" +
+                "Guest Age: " + age + "\n" +
+                "Room Type: " + roomType + "\n" +
+                "Number of Nights: " + nights + "\n" +
+                "Number of Guests: " + guests + "\n" +
+                "Rate per Night: $" + rate.ToString("0.00") + "\n" +
+                "Room Cost: $" + roomCost.ToString("0.00") + "\n" +
+                "Night Discount: -$" + nightDiscount.ToString("0.00") + "\n" +
+                "Breakfast: $" + breakfastCost.ToString("0.00") + "\n" +
+                "Service Charge: $" + serviceCharge.ToString("0.00") + "\n" +
+                "Senior Discount: -$" + seniorDiscount.ToString("0.00") + "\n" +
+                "-------------------------\n" +
+                "FINAL TOTAL: $" + total.ToString("0.00");
+        }
+        
+        
+        
+
+        private void btnClear_Click(object sender, EventArgs e)
+        { }
+         
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
+      private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnclear_Click(object sender, EventArgs e)
+        {
+            txtGuestName.Clear();
+            txtGuestAge.Clear();
+            txtNights.Clear();
+            txtGuests.Clear();
+
+            rdoStandard.Checked = false;
+            rdoNormal.Checked = false;
+            rdoHight.Checked = false;
+
+            chkBreakfast.Checked = false;
+            rtbDetails.Clear();
+
+            txtGuestName.Focus();
+        }
+
+        
+    }
+}
